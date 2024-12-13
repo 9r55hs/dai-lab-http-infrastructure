@@ -49,8 +49,8 @@ Create a GitHub repository for your project. You will use this repository to col
 
 ### Acceptance criteria
 
-- [/] You have created a GitHub repository for your project.
-- [/] The respository contains a Readme file that you will use to document your project.
+- [X] You have created a GitHub repository for your project.
+- [X] The respository contains a Readme file that you will use to document your project.
 
 
 Step 1: Static Web site
@@ -60,12 +60,12 @@ The goal of this step is to build a Docker image that contains a static HTTP ser
 
 ### Acceptance criteria
 
-- [/] You have created a separate folder in your respository for your static Web server.
-- [/] You have a Dockerfile based on the Nginx image. The Dockerfile copies the static site content into the image.
-- [/] You have configured the `nginx.conf` configuration file to serve the static content on a port (normally 80).
-- [/] You are able to explain the content of the `nginx.conf` file.
-- [/] You can run the image and access the static content from a browser.
-- [/] You have **documented** your configuration in your report.
+- [X] You have created a separate folder in your respository for your static Web server.
+- [X] You have a Dockerfile based on the Nginx image. The Dockerfile copies the static site content into the image.
+- [X] You have configured the `nginx.conf` configuration file to serve the static content on a port (normally 80).
+- [X] You are able to explain the content of the `nginx.conf` file.
+- [X] You can run the image and access the static content from a browser.
+- [X] You have **documented** your configuration in your report.
 
 A folder name `nginx` has been created for the static Web server. Inside it are the following files:
 - **html/**: contains the source of the website. The template source can be found [here](https://www.free-css.com/free-css-templates/page293/hostit).
@@ -109,10 +109,10 @@ In addition to the basic docker compose configuration, we want to be able to reb
 
 ### Acceptance criteria
 
-- [ ] You have added a docker compose configuration file to your GitHub repo.
-- [ ] You can start and stop an infrastructure with a single static Web server using docker compose.
-- [ ] You can access the Web server on your local machine on the respective port.
-- [ ] You can rebuild the docker image with `docker compose build`
+- [X] You have added a docker compose configuration file to your GitHub repo.
+- [X] You can start and stop an infrastructure with a single static Web server using docker compose.
+- [X] You can access the Web server on your local machine on the respective port.
+- [X] You can rebuild the docker image with `docker compose build`
 - [ ] You have **documented** your configuration in your report.
 
 
