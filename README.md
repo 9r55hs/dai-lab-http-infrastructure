@@ -49,8 +49,8 @@ Create a GitHub repository for your project. You will use this repository to col
 
 ### Acceptance criteria
 
-- [ ] You have created a GitHub repository for your project.
-- [ ] The respository contains a Readme file that you will use to document your project.
+- [/] You have created a GitHub repository for your project.
+- [/] The respository contains a Readme file that you will use to document your project.
 
 
 Step 1: Static Web site
@@ -60,12 +60,44 @@ The goal of this step is to build a Docker image that contains a static HTTP ser
 
 ### Acceptance criteria
 
-- [ ] You have created a separate folder in your respository for your static Web server.
-- [ ] You have a Dockerfile based on the Nginx image. The Dockerfile copies the static site content into the image.
-- [ ] You have configured the `nginx.conf` configuration file to serve the static content on a port (normally 80).
-- [ ] You are able to explain the content of the `nginx.conf` file.
-- [ ] You can run the image and access the static content from a browser.
-- [ ] You have **documented** your configuration in your report.
+- [/] You have created a separate folder in your respository for your static Web server.
+- [/] You have a Dockerfile based on the Nginx image. The Dockerfile copies the static site content into the image.
+- [/] You have configured the `nginx.conf` configuration file to serve the static content on a port (normally 80).
+- [/] You are able to explain the content of the `nginx.conf` file.
+- [/] You can run the image and access the static content from a browser.
+- [/] You have **documented** your configuration in your report.
+
+A folder name `nginx` has been created for the static Web server. Inside it are the following files:
+- **html/**: contains the source of the website. The template source can be found [here](https://www.free-css.com/free-css-templates/page293/hostit).
+- **nginx.conf**: contains the configuration for the nginx server. It defines the port on which to listen, the root for the source of the website and the index file.
+- **Dockerfile**: define the specifications for the docker image. In the current case, it gets the latest nginx image, copies the nginx.conf file to the image as well as the source files for the website.
+
+#### Dockerfile:
+```docker
+# Getting image
+FROM nginx:latest
+
+# Copying nginx conf to image
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copying website source to image
+COPY html /usr/share/nginx/html
+```
+
+#### nginx.conf
+```
+# Setting up the server
+server {
+    # Defining port
+    listen 80;
+
+    # Source of the website
+    root /usr/share/nginx;
+
+    # Index file source
+    index index.html;
+}
+```
 
 
 Step 2: Docker compose
