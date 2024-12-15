@@ -67,12 +67,16 @@ The goal of this step is to build a Docker image that contains a static HTTP ser
 - [X] You can run the image and access the static content from a browser.
 - [X] You have **documented** your configuration in your report.
 
+### Report
+
+#### Files description
 A folder name `nginx` has been created for the static Web server. Inside it are the following files:
 - **html/**: contains the source of the website. The template source can be found [here](https://www.free-css.com/free-css-templates/page293/hostit).
 - **nginx.conf**: contains the configuration for the nginx server. It defines the port on which to listen, the root for the source of the website and the index file.
 - **Dockerfile**: define the specifications for the docker image. In the current case, it gets the latest nginx image, copies the nginx.conf file to the image as well as the source files for the website.
 
 #### Dockerfile:
+
 ```docker
 # Getting image
 FROM nginx:latest
@@ -113,7 +117,28 @@ In addition to the basic docker compose configuration, we want to be able to reb
 - [X] You can start and stop an infrastructure with a single static Web server using docker compose.
 - [X] You can access the Web server on your local machine on the respective port.
 - [X] You can rebuild the docker image with `docker compose build`
-- [ ] You have **documented** your configuration in your report.
+- [X] You have **documented** your configuration in your report.
+
+### Report
+
+A docker compose file has been added to the root of the folder (`docker-compose.yml`).
+
+Its contents is as follows:
+```docker
+services:
+  # Web Service
+  web:
+    image: nginx
+    # Port mapping
+    ports:
+      - "8080:80"
+    # Volumes
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+```
+
+This file allows us to define the infrastructure to deploy in a single file. Currently, a single service named web has been added. The image to use is nginx, it maps the port 8080 to the port 80 and two volumes are set up for the configuration of the service and the source to use for the website.
 
 
 Step 3: HTTP API server
