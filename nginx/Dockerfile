@@ -1,3 +1,4 @@
+
 # dai-lab-http-infrastructure
 # Step 1: Static Web Site
 # Authors: Gabriel Barros Fernandez - Dylan Stegmuller
@@ -10,4 +11,4 @@ FROM nginx:latest
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copying website source to image
-COPY html /usr/share/nginx/html
+COPY html /usr/share/nginx/

@@ -28,3 +28,6 @@ COPY --from=builder /api/target/api-1.0-jar-with-dependencies.jar api.jar
 
 # Running .jar
 CMD ["java", "-jar", "api.jar"]
+
+# Listening on 7000
+EXPOSE 7000

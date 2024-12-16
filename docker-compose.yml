@@ -5,27 +5,35 @@
 
 # Defining services
 services:
+  reverse_proxy:
+    image: traefik:latest
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=true"
   # Web Service
   web:
     image: nginx
     # Build context and Dockerfile to use
     build:
       context: ./nginx/
-      dockerfile: Dockerfile
-    # Port mapping
-    ports:
-      - "8080:80"
-    # Volumes
+      dockerfile: Dockerfile    # Volumes
     volumes:
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-  # API
+    labels:
+      - "traefik.http.routers.web.rule=Host(`192.168.56.12`)"
   api:
     image: api
     # Build context and Dockerfile to use
     build:
       context: ./api/
       dockerfile: Dockerfile
-    # Port Mapping
-    ports:
-      - "7000:7000"
+    labels:
+      - "traefik.http.routers.api.rule=Host(`192.168.56.12`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.api.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
