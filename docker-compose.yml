@@ -1,13 +1,17 @@
 # dai-lab-http-infrastructure
-# Step 2: Docker compose
+# Step 3: HTTP API server
 # Authors: Gabriel Barros Fernandez - Dylan Stegmuller
-# Date: 13.12.2024
+# Date: 16.12.2024
 
 # Defining services
 services:
   # Web Service
   web:
     image: nginx
+    # Build context and Dockerfile to use
+    build:
+      context: ./nginx/
+      dockerfile: Dockerfile
     # Port mapping
     ports:
       - "8080:80"
@@ -15,3 +19,13 @@ services:
     volumes:
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+  # API
+  api:
+    image: api
+    # Build context and Dockerfile to use
+    build:
+      context: ./api/
+      dockerfile: Dockerfile
+    # Port Mapping
+    ports:
+      - "7000:7000"

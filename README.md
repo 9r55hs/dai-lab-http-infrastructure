@@ -69,6 +69,8 @@ The goal of this step is to build a Docker image that contains a static HTTP ser
 
 ### Report
 
+![Alt text](assets/hostit.png)
+
 #### Files description
 A folder name `nginx` has been created for the static Web server. Inside it are the following files:
 - **html/**: contains the source of the website. The template source can be found [here](https://www.free-css.com/free-css-templates/page293/hostit).
@@ -162,13 +164,132 @@ Once you're finished with the implementation, create a Dockerfile for the API se
 
 ### Acceptance criteria
 
-- [ ] Your API supports all CRUD operations.
-- [ ] You are able to explain your implementation and walk us through the code.
-- [ ] You can start and stop the API server using docker compose.
-- [ ] You can access both the API and the static server from your browser.
-- [ ] You can rebuild the docker image with docker compose.
-- [ ] You can do demo where use an API testing tool to show that all CRUD operations work.
-- [ ] You have **documented** your implementation in your report.
+- [X] Your API supports all CRUD operations.
+- [X] You are able to explain your implementation and walk us through the code.
+- [X] You can start and stop the API server using docker compose.
+- [X] You can access both the API and the static server from your browser.
+- [X] You can rebuild the docker image with docker compose.
+- [X] You can do demo where use an API testing tool to show that all CRUD operations work.
+- [X] You have **documented** your implementation in your report.
+
+### Report
+#### API
+
+The created API is used to manage a list of TODO items and suports all CRUD operation, as described hereafter.
+The deployment the application can be made with docker by using the `docker-compose.yml` file. When using the command `docker compose build` the application is built with maven and run inside a container. The same file also deploy de static website. The API can be accessed on the port `7000` and the website one the port `8080`.
+
+The API can also be accessed from a browser as seen here:
+
+![Alt text](assets/api.png)
+
+Every command has been tested with Bruno. The collection can be found in the folder `api-test`.
+
+![Alt text](assets/bruno.png)
+
+#### Create
+##### **Create a Task**
+
+| **API Command**         | `/tasks`                      |
+|--------------------------|-------------------------------|
+| **Type of Command**      | `POST`                       |
+| **Input**                | JSON object of a `Task`. Example: `{"name": "{{name}}", "description": "{{description}}", "dueDate": "{{dueDate}}"}` |
+| **Output**               | JSON object of the created task. |
+| **Status Codes**         | `201 Created` on success. |
+
+---
+
+#### Read
+##### **Get All Tasks**
+
+| **API Command**         | `/tasks`                     |
+|--------------------------|------------------------------|
+| **Type of Command**      | `GET`                        |
+| **Input**                | None                         |
+| **Output**               | JSON object containing all tasks. |
+| **Status Codes**         | `200 OK` on success.         |
+
+##### **Get Pending Tasks**
+
+| **API Command**         | `/tasks/pending`             |
+|--------------------------|------------------------------|
+| **Type of Command**      | `GET`                        |
+| **Input**                | None                         |
+| **Output**               | JSON object containing tasks with `done: false`. |
+| **Status Codes**         | `200 OK` on success.         |
+
+
+##### **Get Completed Tasks**
+
+| **API Command**         | `/tasks/done`                |
+|--------------------------|------------------------------|
+| **Type of Command**      | `GET`                        |
+| **Input**                | None                         |
+| **Output**               | JSON object containing tasks with `done: true`. |
+| **Status Codes**         | `200 OK` on success.         |
+
+
+##### **Get a Specific Task**
+
+| **API Command**         | `/tasks/{id}`                |
+|--------------------------|------------------------------|
+| **Type of Command**      | `GET`                        |
+| **Input**                | Path parameter: `id` (integer). Example: `/tasks/1` |
+| **Output**               | JSON object of the task with the given `id`. |
+| **Status Codes**         | `200 OK` if task exists. <br>`404 Not Found` if task does not exist. |
+
+---
+
+#### Update
+##### **Update a Task**
+
+| **API Command**         | `/tasks/{id}`                |
+|--------------------------|------------------------------|
+| **Type of Command**      | `PUT`                        |
+| **Input**                | Path parameter: `id` (integer). <br>JSON object of updated task. Example: `{ "title": "Updated Task", "done": false }` |
+| **Output**               | None                         |
+| **Status Codes**         | `204 No Content` on success. |
+
+
+##### **Mark a Task as Done**
+
+| **API Command**         | `/tasks/{id}/done`           |
+|--------------------------|------------------------------|
+| **Type of Command**      | `PUT`                        |
+| **Input**                | Path parameter: `id` (integer). Example: `/tasks/1` |
+| **Output**               | None                         |
+| **Status Codes**         | `204 No Content` on success. <br>`404 Not Found` if task does not exist. |
+
+---
+
+#### Delete
+##### **Delete a Specific Task**
+
+| **API Command**         | `/tasks/{id}`                |
+|--------------------------|------------------------------|
+| **Type of Command**      | `DELETE`                     |
+| **Input**                | Path parameter: `id` (integer). Example: `/tasks/1` |
+| **Output**               | None                         |
+| **Status Codes**         | `204 No Content` on success. |
+
+
+##### **Delete All Completed Tasks**
+
+| **API Command**         | `/tasks/done`                |
+|--------------------------|------------------------------|
+| **Type of Command**      | `DELETE`                     |
+| **Input**                | None                         |
+| **Output**               | None                         |
+| **Status Codes**         | `204 No Content` on success. |
+
+
+##### **Delete All Tasks**
+
+| **API Command**         | `/tasks`                     |
+|--------------------------|------------------------------|
+| **Type of Command**      | `DELETE`                     |
+| **Input**                | None                         |
+| **Output**               | None                         |
+| **Status Codes**         | `204 No Content` on success. |
 
 
 Step 4: Reverse proxy with Traefik
