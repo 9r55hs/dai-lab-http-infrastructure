@@ -1,0 +1,15 @@
+meta {
+  name: Mark Task Done
+  type: http
+  seq: 2
+}
+
+put {
+  url: 127.0.0.1:7000/tasks/{{id}}/done
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  id: 2
+}

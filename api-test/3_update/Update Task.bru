@@ -1,0 +1,26 @@
+meta {
+  name: Update Task
+  type: http
+  seq: 1
+}
+
+put {
+  url: 127.0.0.1:7000/tasks/{{id}}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{name}}",
+    "description": "{{description}}",
+    "dueDate": "{{dueDate}}"
+  }
+}
+
+vars:pre-request {
+  id: 1
+  name: new task name
+  description: new task descrption
+  dueDate: 12-12-2000
+}

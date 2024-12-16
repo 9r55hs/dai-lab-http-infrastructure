@@ -1,0 +1,15 @@
+meta {
+  name: Read Task
+  type: http
+  seq: 4
+}
+
+get {
+  url: 127.0.0.1:7000/tasks/{{id}}
+  body: none
+  auth: none
+}
+
+vars:pre-request {
+  id: 1
+}

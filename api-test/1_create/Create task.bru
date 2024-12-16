@@ -1,0 +1,25 @@
+meta {
+  name: Create task
+  type: http
+  seq: 1
+}
+
+post {
+  url: 127.0.0.1:7000/tasks
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "{{name}}",
+    "description": "{{description}}",
+    "dueDate": "{{dueDate}}"
+  }
+}
+
+vars:pre-request {
+  name: task name
+  description: task description
+  dueDate: 31-12-2024
+}
