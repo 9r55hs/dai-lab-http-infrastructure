@@ -292,38 +292,94 @@ Every command has been tested with Bruno. The collection can be found in the fol
 | **Status Codes**         | `204 No Content` on success. |
 
 
-Step 4: Reverse proxy with Traefik
+Step 4: Reverse proxy with _Traefik_
 ----------------------------------
 
 The goal of this step is to place a reverse proxy in front of the dynamic and static Web servers such that the reverse proxy receives all connections and relays them to the respective Web server. 
 
-You will use [Traefik](https://traefik.io/traefik/) as a reverse proxy. Traefik interfaces directly with Docker to obtain the list of active backend servers. This means that it can dynamically adjust to the number of running server. Traefik has the particularity that it can be configured using labels in the docker compose file. This means that you do not need to write a configuration file for Traefik, but Traefik will read container configurations from the docker engine through the file `/var/run/docker.sock`.
+You will use [_Traefik_](https://_Traefik_.io/_Traefik_/) as a reverse proxy. _Traefik_ interfaces directly with Docker to obtain the list of active backend servers. This means that it can dynamically adjust to the number of running server. _Traefik_ has the particularity that it can be configured using labels in the docker compose file. This means that you do not need to write a configuration file for _Traefik_, but _Traefik_ will read container configurations from the docker engine through the file `/var/run/docker.sock`.
 
 The steps to follow for this section are thus:
 
-- Add a new service "reverse_proxy" to your docker compose file using the Traefik docker image
-- Read the [Traefik Quick Start](https://doc.traefik.io/traefik/getting-started/quick-start/) documentation to establish the basic configuration.
-- Read the [Traefik & Docker](https://doc.traefik.io/traefik/routing/providers/docker/) documentation to learn how to configure Traefik to work with Docker.
+- Add a new service "reverse_proxy" to your docker compose file using the _Traefik_ docker image
+- Read the [_Traefik_ Quick Start](https://doc._Traefik_.io/_Traefik_/getting-started/quick-start/) documentation to establish the basic configuration.
+- Read the [_Traefik_ & Docker](https://doc._Traefik_.io/_Traefik_/routing/providers/docker/) documentation to learn how to configure _Traefik_ to work with Docker.
 - Then implement the reverse proxy:
   - relay the requests coming to "localhost" to the static HTTP server
-  - relay the requests coming to "localhost/api" to the API server. See the [Traefik router documentation](https://doc.traefik.io/traefik/routing/routers/) for managing routes based on path prefixes. 
-  - you will have to remove the `ports` configuration from the static and dynamic server in the docker compose file and replace them with `expose` configuration. Traefik will then be able to access the servers through the internal Docker network.
-- You can use the [Traefik dashboard](https://doc.traefik.io/traefik/operations/dashboard/) to monitor the state of the reverse proxy.
+  - relay the requests coming to "localhost/api" to the API server. See the [_Traefik_ router documentation](https://doc._Traefik_.io/_Traefik_/routing/routers/) for managing routes based on path prefixes. 
+  - you will have to remove the `ports` configuration from the static and dynamic server in the docker compose file and replace them with `expose` configuration. _Traefik_ will then be able to access the servers through the internal Docker network.
+- You can use the [_Traefik_ dashboard](https://doc._Traefik_.io/_Traefik_/operations/dashboard/) to monitor the state of the reverse proxy.
 
 ### Acceptance criteria
 
-- [ ] You can do a demo where you start from an "empty" Docker environment (no container running) and using docker compose you can start your infrastructure with 3 containers: static server, dynamic server and reverse proxy
-- [ ] In the demo you can access each server from the browser in the demo. You can prove that the routing is done correctly through the reverse proxy.
-- [ ] You are able to explain how you have implemented the solution and walk us through the configuration and the code.
-- [ ] You are able to explain why a reverse proxy is useful to improve the security of the infrastructure.
-- [ ] You are able to explain how to access the dashboard of Traefik and how it works.
-- [ ] You have **documented** your configuration in your report.
+- [X] You can do a demo where you start from an "empty" Docker environment (no container running) and using docker compose you can start your infrastructure with 3 containers: static server, dynamic server and reverse proxy
+- [X] In the demo you can access each server from the browser in the demo. You can prove that the routing is done correctly through the reverse proxy.
+- [X] You are able to explain how you have implemented the solution and walk us through the configuration and the code.
+- [X] You are able to explain why a reverse proxy is useful to improve the security of the infrastructure.
+- [X] You are able to explain how to access the dashboard of _Traefik_ and how it works.
+- [X] You have **documented** your configuration in your report.
 
+### Report
+#### Overview
+_Traefik_ has been configured to route traffic to different servers based on path prefixes:
+
+- `{baseURL}` redirects to the **static website**.
+- `{baseURL}/api/` redirects to the **dynamic server (API)**.
+- The **Traefik dashboard** can be accessed using the URL: `{baseURL}:8080`.
+
+On the **Traefik dashboard**, we can see the different services detected by the reverse proxy. The use of a reverse proxy increases **security**, **resiliency**, and **adaptability**. By using a reverse proxy, we can limit the information about the servers exposed to the user. A reverse proxy offers a single point of contact for the user, which minimizes the attack surface.
+
+Additionally, since the user always interacts with the reverse proxy, we can improve the resiliency of the infrastructure by deploying multiple instances of the same service to enable **load balancing** and **failover** without requiring any changes on the user side. Furthermore, the reverse proxy allows us to completely replace or update services behind it **seamlessly**, without causing any interruption for users.
+
+#### Routing and Results
+- **Page accessed at `{baseURL}`** (static website):<br><br>
+    ![Static Website](assets/hostit_redirected.png)<br><br>
+
+- **Page accessed at `{baseURL}/api/tasks`** (dynamic API):<br><br>
+    ![Dynamic API](assets/api_redirected.png)<br><br>
+
+- **Traefik dashboard accessed at `{baseURL}:8080`**:<br><br>
+    ![Traefik Dashboard](assets/traefik.png)
+
+#### Configuration:
+
+The following lines have been added to the file `docker-compose.yml` to deploy _Traefik_:
+```docker
+  reverse_proxy:
+    image: traefik:latest
+    # Needed to deploy the dashboard
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 80:80
+      - 8080:8080
+    # Allows Traefik to auto-detect new service by monitoring the docker.sock file
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Enables Traefik
+    labels:
+      - "traefik.enable=true"
+```
+
+We were then able to define routing rules by using labels in definition of the different services as seen hereafter:
+1. Static website:
+```docker
+    labels:
+      - "traefik.http.routers.web.rule=Host(`{baseURL}`)"
+```
+2. Dynamic website:
+```docker
+    labels:
+      # Defining the path prefix
+      - "traefik.http.routers.api.rule=Host(`{baseURL}`) && PathPrefix(`/api`)"
+      # Setting up rule to strip the path prefix before redirecting to server
+      - "traefik.http.routers.api.middlewares=strip-api-prefix"
+      - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
+```
 
 Step 5: Scalability and load balancing
 --------------------------------------
 
-The goal of this section is to allow Traefik to dynamically detect several instances of the (dynamic/static) Web servers. You may have already done this in the previous step 3.
+The goal of this section is to allow _Traefik_ to dynamically detect several instances of the (dynamic/static) Web servers. You may have already done this in the previous step 3.
 
 Modify your docker compose file such that several instances of each server are started. Check that the reverse proxy distributes the connections between the different instances. Then, find a way to *dynamically* update the number of instances of each service with docker compose, without having to stop and restart the topology.
 
@@ -331,7 +387,7 @@ Modify your docker compose file such that several instances of each server are s
 
 - [ ] You can use docker compose to start the infrastructure with several instances of each server (static and dynamic).
 - [ ] You can dynamically add and remove instances of each server.
-- [ ] You can do a demo to show that Traefik performs load balancing among the instances.
+- [ ] You can do a demo to show that _Traefik_ performs load balancing among the instances.
 - [ ] If you add or remove instances, you can show that the load balancer is dynamically updated to use the available instances.
 - [ ] You have **documented** your configuration in your report.
 
@@ -339,12 +395,12 @@ Modify your docker compose file such that several instances of each server are s
 Step 6: Load balancing with round-robin and sticky sessions
 -----------------------------------------------------------
 
-By default, Traefik uses round-robin to distribute the load among all available instances. However, if a service is stateful, it would be better to send requests of the same session always to the same instance. This is called sticky sessions.
+By default, _Traefik_ uses round-robin to distribute the load among all available instances. However, if a service is stateful, it would be better to send requests of the same session always to the same instance. This is called sticky sessions.
 
 The goal of this step is to change the configuration such that:
 
-- Traefik uses sticky session for the dynamic server instances (API service).
-- Traefik continues to use round robin for the static servers (no change required).
+- _Traefik_ uses sticky session for the dynamic server instances (API service).
+- _Traefik_ continues to use round robin for the static servers (no change required).
 
 ### Acceptance criteria
 
@@ -354,10 +410,10 @@ The goal of this step is to change the configuration such that:
 - [ ] You have **documented** your configuration and your validation procedure in your report.
 
 
-Step 7: Securing Traefik with HTTPS
+Step 7: Securing _Traefik_ with HTTPS
 -----------------------------------
 
-Any real-world web infrastructure must be secured with HTTPS instead of clear-text HTTP. The goal of this step is to configure Traefik to use HTTPS with the clients. The schema below shows the architecture.
+Any real-world web infrastructure must be secured with HTTPS instead of clear-text HTTP. The goal of this step is to configure _Traefik_ to use HTTPS with the clients. The schema below shows the architecture.
 
 ```mermaid
 
@@ -381,20 +437,20 @@ This means that HTTPS is used for connection with clients, over the Internet. In
 
 To do this, you will first need to generate an encryption certificate. Since the system is not exposed to the Internet, you cannot use a public certificate such as Let's encrypt, but have to generate a self-signed certificate. You can [do this using openssl](https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl#10176685).
 
-Once you got the two files (certificate and key), you can place them into a folder, which has to be [mounted as a volume in the Traefik container](https://docs.docker.com/compose/compose-file/compose-file-v3/#short-syntax-3). You can mount the volume at any path in the container, for example `/etc/traefik/certificates`.
+Once you got the two files (certificate and key), you can place them into a folder, which has to be [mounted as a volume in the _Traefik_ container](https://docs.docker.com/compose/compose-file/compose-file-v3/#short-syntax-3). You can mount the volume at any path in the container, for example `/etc/_Traefik_/certificates`.
 
-### Traefik configuration file
+### _Traefik_ configuration file
 
-Up to now, you've configured Traefik through labels directely in the docker compose file. However, it is not possible to specify the location of the certificates to Traefik with labels. You have to create a configuration file `traefik.yaml`. 
+Up to now, you've configured _Traefik_ through labels directely in the docker compose file. However, it is not possible to specify the location of the certificates to _Traefik_ with labels. You have to create a configuration file `_Traefik_.yaml`. 
 
-Again, you have to mount this file into the Traefik container as a volume, at the location `/etc/traefik/traefik.yaml`.
+Again, you have to mount this file into the _Traefik_ container as a volume, at the location `/etc/_Traefik_/_Traefik_.yaml`.
 
 The configuration file has to contain several sections:
 
-- The [providers](https://doc.traefik.io/traefik/providers/docker/#configuration-examples) section to configure Traefik to read the configuration from Docker.
-- The [entrypoints](https://doc.traefik.io/traefik/routing/entrypoints/#configuration-examples) section to configure two endpoints:  `http` and `https`.
-- The [tls](https://doc.traefik.io/traefik/https/tls/#user-defined) section to configure the TLS certificates. Specify the location of the certificates as the location where you mounted the directory into the container (such as `/etc/traefik/certificates`).
-- In order to make the dashboard accessible, you have to configure the [api](https://doc.traefik.io/traefik/operations/dashboard/#insecure-mode) section. You can remove the respective labels from the docker compose file.
+- The [providers](https://doc._Traefik_.io/_Traefik_/providers/docker/#configuration-examples) section to configure _Traefik_ to read the configuration from Docker.
+- The [entrypoints](https://doc._Traefik_.io/_Traefik_/routing/entrypoints/#configuration-examples) section to configure two endpoints:  `http` and `https`.
+- The [tls](https://doc._Traefik_.io/_Traefik_/https/tls/#user-defined) section to configure the TLS certificates. Specify the location of the certificates as the location where you mounted the directory into the container (such as `/etc/_Traefik_/certificates`).
+- In order to make the dashboard accessible, you have to configure the [api](https://doc._Traefik_.io/_Traefik_/operations/dashboard/#insecure-mode) section. You can remove the respective labels from the docker compose file.
 
 ### Activating the HTTPS entrypoint for the servers
 
@@ -403,13 +459,13 @@ Finally, you have to activate HTTPS for the static and dynamic servers. This is 
 - to activate the HTTPS entrypoint,
 - to set TLS to true.
 
-See the [Traefik documentation for Docker](https://doc.traefik.io/traefik/routing/providers/docker/#routers) for these two labels.
+See the [_Traefik_ documentation for Docker](https://doc._Traefik_.io/_Traefik_/routing/providers/docker/#routers) for these two labels.
 
 ### Testing
 
 After these configurations it should be possible to access the static and the dynamic servers through HTTPS. The browser will complain that the sites are not secure, since the certificate is self-signed. But you can ignore this warning.
 
-If it does not work, go to the Traefik dashboard and check the configuration of the routers and the entrypoints.
+If it does not work, go to the _Traefik_ dashboard and check the configuration of the routers and the entrypoints.
 
 ### Acceptance criteria
 
