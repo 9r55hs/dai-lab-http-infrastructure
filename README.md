@@ -391,6 +391,24 @@ Modify your docker compose file such that several instances of each server are s
 - [ ] If you add or remove instances, you can show that the load balancer is dynamically updated to use the available instances.
 - [ ] You have **documented** your configuration in your report.
 
+### Report
+
+Multiple instance of the different service can be deployed with the command:
+```sh
+docker compose up --scale api=n --scale web=m -d
+```
+This command will deploy _n_ instances of the service `api` and _m_ instances of the service `web`. If needed the number of instances can be modified while running with the following command:
+
+```sh
+docker compose up --scale api=k -d --no-recreate
+```
+This command will modify the number of running instances of the service `api` from _n_ to _k_.
+_Traefik_ auto-detects the multiple instances of the services and will distribute the traffic amongst them.
+
+In the following image we can see that 3 servers of the `api` service and 5 servers of the `web` service have been detected by _Traefik_.
+
+![Alt text](assets/load_balancing.png)
+
 
 Step 6: Load balancing with round-robin and sticky sessions
 -----------------------------------------------------------
