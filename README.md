@@ -385,11 +385,11 @@ Modify your docker compose file such that several instances of each server are s
 
 ### Acceptance criteria
 
-- [ ] You can use docker compose to start the infrastructure with several instances of each server (static and dynamic).
-- [ ] You can dynamically add and remove instances of each server.
-- [ ] You can do a demo to show that _Traefik_ performs load balancing among the instances.
-- [ ] If you add or remove instances, you can show that the load balancer is dynamically updated to use the available instances.
-- [ ] You have **documented** your configuration in your report.
+- [X] You can use docker compose to start the infrastructure with several instances of each server (static and dynamic).
+- [X] You can dynamically add and remove instances of each server.
+- [X] You can do a demo to show that _Traefik_ performs load balancing among the instances.
+- [X] If you add or remove instances, you can show that the load balancer is dynamically updated to use the available instances.
+- [X] You have **documented** your configuration in your report.
 
 ### Report
 
