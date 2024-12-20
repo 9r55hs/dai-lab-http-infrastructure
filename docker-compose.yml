@@ -37,3 +37,4 @@ services:
       - "traefik.http.routers.api.rule=Host(`192.168.56.12`) && PathPrefix(`/api`)"
       - "traefik.http.routers.api.middlewares=strip-api-prefix"
       - "traefik.http.middlewares.strip-api-prefix.stripprefix.prefixes=/api"
+      - "traefik.http.services.api.loadbalancer.sticky.cookie=true"

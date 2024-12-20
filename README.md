@@ -422,11 +422,25 @@ The goal of this step is to change the configuration such that:
 
 ### Acceptance criteria
 
-- [ ] You do a setup to demonstrate the notion of sticky session.
-- [ ] You prove that your load balancer can distribute HTTP requests in a round-robin fashion to the static server nodes (because there is no state).
-- [ ] You prove that your load balancer can handle sticky sessions when forwarding HTTP requests to the dynamic server nodes.
-- [ ] You have **documented** your configuration and your validation procedure in your report.
+- [X] You do a setup to demonstrate the notion of sticky session.
+- [X] You prove that your load balancer can distribute HTTP requests in a round-robin fashion to the static server nodes (because there is no state).
+- [X] You prove that your load balancer can handle sticky sessions when forwarding HTTP requests to the dynamic server nodes.
+- [X] You have **documented** your configuration and your validation procedure in your report.
 
+### Report
+
+The `docker-compose.yml` file has been updated o enable sticky sessions for the `api` service. This was achieved by adding the following line in the `api` service definition in the label section:
+```docker
+- "traefik.http.services.api.loadbalancer.sticky.cookie=true"
+```
+
+The _Traefik_ dashboard now shows that sticky sessions are enabled for the `api` service.
+
+![Alt text](assets/sticky_sessions.png)
+
+When visiting the `api` service from a browser, we can now observe that a cookie is created on the client's side. However, no cookies are created when visiting the static website.
+
+![Alt text](assets/cookie.png)
 
 Step 7: Securing _Traefik_ with HTTPS
 -----------------------------------
