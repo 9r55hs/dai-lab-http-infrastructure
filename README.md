@@ -27,17 +27,6 @@ In addition to the basic requirement of service static and dynamic content, the 
 - **Security**: the connection between the browser and the reverse proxy will be encrypted using HTTPS.
 - **Management**: a Web application will be deployed to manage the infrastructure. This application will allow to start/stop instances of the servers and to monitor the state of the infrastructure.
 
-General instructions
---------------------
-
-- This is a **BIG** lab and you will need a lot of time to complete it. 
-- You will work in **groups of 2 students** and use a Git workflow to collaborate.
-- For certain steps you will need to do research in the documentation by yourself (we are here to help, but we will not give you step-by-step instructions!) or you will need to be creative (do not expect complete guidelines).
-- Read carefully all the **acceptance criteria** of each step. They will tell you what you need to do to complete the step.
-- After the lab, each group will perform a short **demo** of their infrastructure.
-- **You have to write a report with a short descriptioin for each of the steps.** Please do that directly in the repo, in one or more markdown files. Start in the README.md file at the root of your directory.
-- The report must contain the procedure that you have followed to prove that your configuration is correct (what you did do make the step work and what you would do if you were doing a demo).
-
 
 Step 0: GitHub repository
 -------------------------
@@ -47,27 +36,11 @@ Create a GitHub repository for your project. You will use this repository to col
 > [!IMPORTANT]
 > Be careful to keep a clear structure of the repository such that the different components are clearly separated.
 
-### Acceptance criteria
-
-- [X] You have created a GitHub repository for your project.
-- [X] The respository contains a Readme file that you will use to document your project.
-
 
 Step 1: Static Web site
 -----------------------
 
 The goal of this step is to build a Docker image that contains a static HTTP server Nginx. The server will serve a static Web site. The static Web site will be a single page with a nice looking template. You can use a free template for example from [Free-CSS](https://www.free-css.com/free-css-templates) or [Start Bootstrap](https://startbootstrap.com/themes).
-
-### Acceptance criteria
-
-- [X] You have created a separate folder in your respository for your static Web server.
-- [X] You have a Dockerfile based on the Nginx image. The Dockerfile copies the static site content into the image.
-- [X] You have configured the `nginx.conf` configuration file to serve the static content on a port (normally 80).
-- [X] You are able to explain the content of the `nginx.conf` file.
-- [X] You can run the image and access the static content from a browser.
-- [X] You have **documented** your configuration in your report.
-
-### Report
 
 ![Alt text](assets/hostit.png)
 
@@ -113,15 +86,7 @@ The goal of this step is to use Docker compose to deploy a first version of the 
 
 In addition to the basic docker compose configuration, we want to be able to rebuild the docker image of the Web server. See the [Docker compose Build documentation](https://docs.docker.com/compose/compose-file/build/) for this part.
 
-### Acceptance criteria
-
-- [X] You have added a docker compose configuration file to your GitHub repo.
-- [X] You can start and stop an infrastructure with a single static Web server using docker compose.
-- [X] You can access the Web server on your local machine on the respective port.
-- [X] You can rebuild the docker image with `docker compose build`
-- [X] You have **documented** your configuration in your report.
-
-### Report
+### Configuration
 
 A docker compose file has been added to the root of the folder (`docker-compose.yml`).
 
@@ -162,18 +127,7 @@ The server does not need to use a database. You can store the data in memory. Bu
 
 Once you're finished with the implementation, create a Dockerfile for the API server. Then add it as a service to your docker compose configuration.
 
-### Acceptance criteria
-
-- [X] Your API supports all CRUD operations.
-- [X] You are able to explain your implementation and walk us through the code.
-- [X] You can start and stop the API server using docker compose.
-- [X] You can access both the API and the static server from your browser.
-- [X] You can rebuild the docker image with docker compose.
-- [X] You can do demo where use an API testing tool to show that all CRUD operations work.
-- [X] You have **documented** your implementation in your report.
-
-### Report
-#### API
+### API
 
 The created API is used to manage a list of TODO items and suports all CRUD operation, as described hereafter.
 The deployment the application can be made with docker by using the `docker-compose.yml` file. When using the command `docker compose build` the application is built with maven and run inside a container. The same file also deploy de static website. The API can be accessed on the port `7000` and the website one the port `8080`.
@@ -186,8 +140,8 @@ Every command has been tested with Bruno. The collection can be found in the fol
 
 ![Alt text](assets/bruno.png)
 
-#### Create
-##### **Create a Task**
+### Create
+#### **Create a Task**
 
 | **API Command**         | `/tasks`                      |
 |--------------------------|-------------------------------|
@@ -198,8 +152,8 @@ Every command has been tested with Bruno. The collection can be found in the fol
 
 ---
 
-#### Read
-##### **Get All Tasks**
+### Read
+#### **Get All Tasks**
 
 | **API Command**         | `/tasks`                     |
 |--------------------------|------------------------------|
@@ -208,7 +162,7 @@ Every command has been tested with Bruno. The collection can be found in the fol
 | **Output**               | JSON object containing all tasks. |
 | **Status Codes**         | `200 OK` on success.         |
 
-##### **Get Pending Tasks**
+#### **Get Pending Tasks**
 
 | **API Command**         | `/tasks/pending`             |
 |--------------------------|------------------------------|
@@ -218,7 +172,7 @@ Every command has been tested with Bruno. The collection can be found in the fol
 | **Status Codes**         | `200 OK` on success.         |
 
 
-##### **Get Completed Tasks**
+#### **Get Completed Tasks**
 
 | **API Command**         | `/tasks/done`                |
 |--------------------------|------------------------------|
@@ -228,7 +182,7 @@ Every command has been tested with Bruno. The collection can be found in the fol
 | **Status Codes**         | `200 OK` on success.         |
 
 
-##### **Get a Specific Task**
+#### **Get a Specific Task**
 
 | **API Command**         | `/tasks/{id}`                |
 |--------------------------|------------------------------|
@@ -239,8 +193,8 @@ Every command has been tested with Bruno. The collection can be found in the fol
 
 ---
 
-#### Update
-##### **Update a Task**
+### Update
+#### **Update a Task**
 
 | **API Command**         | `/tasks/{id}`                |
 |--------------------------|------------------------------|
@@ -250,7 +204,7 @@ Every command has been tested with Bruno. The collection can be found in the fol
 | **Status Codes**         | `204 No Content` on success. |
 
 
-##### **Mark a Task as Done**
+#### **Mark a Task as Done**
 
 | **API Command**         | `/tasks/{id}/done`           |
 |--------------------------|------------------------------|
@@ -261,8 +215,8 @@ Every command has been tested with Bruno. The collection can be found in the fol
 
 ---
 
-#### Delete
-##### **Delete a Specific Task**
+### Delete
+#### **Delete a Specific Task**
 
 | **API Command**         | `/tasks/{id}`                |
 |--------------------------|------------------------------|
@@ -272,7 +226,7 @@ Every command has been tested with Bruno. The collection can be found in the fol
 | **Status Codes**         | `204 No Content` on success. |
 
 
-##### **Delete All Completed Tasks**
+#### **Delete All Completed Tasks**
 
 | **API Command**         | `/tasks/done`                |
 |--------------------------|------------------------------|
@@ -282,7 +236,7 @@ Every command has been tested with Bruno. The collection can be found in the fol
 | **Status Codes**         | `204 No Content` on success. |
 
 
-##### **Delete All Tasks**
+#### **Delete All Tasks**
 
 | **API Command**         | `/tasks`                     |
 |--------------------------|------------------------------|
@@ -310,17 +264,7 @@ The steps to follow for this section are thus:
   - you will have to remove the `ports` configuration from the static and dynamic server in the docker compose file and replace them with `expose` configuration. _Traefik_ will then be able to access the servers through the internal Docker network.
 - You can use the [_Traefik_ dashboard](https://doc._Traefik_.io/_Traefik_/operations/dashboard/) to monitor the state of the reverse proxy.
 
-### Acceptance criteria
-
-- [X] You can do a demo where you start from an "empty" Docker environment (no container running) and using docker compose you can start your infrastructure with 3 containers: static server, dynamic server and reverse proxy
-- [X] In the demo you can access each server from the browser in the demo. You can prove that the routing is done correctly through the reverse proxy.
-- [X] You are able to explain how you have implemented the solution and walk us through the configuration and the code.
-- [X] You are able to explain why a reverse proxy is useful to improve the security of the infrastructure.
-- [X] You are able to explain how to access the dashboard of _Traefik_ and how it works.
-- [X] You have **documented** your configuration in your report.
-
-### Report
-#### Overview
+### Overview
 _Traefik_ has been configured to route traffic to different servers based on path prefixes:
 
 - `{baseURL}` redirects to the **static website**.
@@ -331,7 +275,7 @@ On the **Traefik dashboard**, we can see the different services detected by the 
 
 Additionally, since the user always interacts with the reverse proxy, we can improve the resiliency of the infrastructure by deploying multiple instances of the same service to enable **load balancing** and **failover** without requiring any changes on the user side. Furthermore, the reverse proxy allows us to completely replace or update services behind it **seamlessly**, without causing any interruption for users.
 
-#### Routing and Results
+### Routing and Results
 - **Page accessed at `{baseURL}`** (static website):<br><br>
     ![Static Website](assets/hostit_redirected.png)<br><br>
 
@@ -341,7 +285,7 @@ Additionally, since the user always interacts with the reverse proxy, we can imp
 - **Traefik dashboard accessed at `{baseURL}:8080`**:<br><br>
     ![Traefik Dashboard](assets/traefik.png)
 
-#### Configuration:
+### Configuration:
 
 The following lines have been added to the file `docker-compose.yml` to deploy _Traefik_:
 ```docker
@@ -383,14 +327,6 @@ The goal of this section is to allow _Traefik_ to dynamically detect several ins
 
 Modify your docker compose file such that several instances of each server are started. Check that the reverse proxy distributes the connections between the different instances. Then, find a way to *dynamically* update the number of instances of each service with docker compose, without having to stop and restart the topology.
 
-### Acceptance criteria
-
-- [X] You can use docker compose to start the infrastructure with several instances of each server (static and dynamic).
-- [X] You can dynamically add and remove instances of each server.
-- [X] You can do a demo to show that _Traefik_ performs load balancing among the instances.
-- [X] If you add or remove instances, you can show that the load balancer is dynamically updated to use the available instances.
-- [X] You have **documented** your configuration in your report.
-
 ### Report
 
 Multiple instance of the different service can be deployed with the command:
@@ -420,14 +356,8 @@ The goal of this step is to change the configuration such that:
 - _Traefik_ uses sticky session for the dynamic server instances (API service).
 - _Traefik_ continues to use round robin for the static servers (no change required).
 
-### Acceptance criteria
 
-- [X] You do a setup to demonstrate the notion of sticky session.
-- [X] You prove that your load balancer can distribute HTTP requests in a round-robin fashion to the static server nodes (because there is no state).
-- [X] You prove that your load balancer can handle sticky sessions when forwarding HTTP requests to the dynamic server nodes.
-- [X] You have **documented** your configuration and your validation procedure in your report.
-
-### Report
+### Configuration
 
 The `docker-compose.yml` file has been updated o enable sticky sessions for the `api` service. This was achieved by adding the following line in the `api` service definition in the label section:
 ```docker
@@ -499,12 +429,27 @@ After these configurations it should be possible to access the static and the dy
 
 If it does not work, go to the _Traefik_ dashboard and check the configuration of the routers and the entrypoints.
 
-### Acceptance criteria
+### Configuration
+The file `docker-compose.yml` has been updated again to enable https. Additionally, a file has been added in the `https` folder to manage Traefik's configuration.
 
-- [ ] You can do a demo where you show that the static and dynamic servers are accessible through HTTPS.
-- [ ] You have **documented** your configuration in your report.
+As shown in the image below, traffic to the application is now routed over HTTPS.
+
+![Alt text](assets/https.png)
+
+It is to be noted that connection is marked as non secure since the Certificate Authority (CA) is not regnognised by the browser. To resolve this, a certificate signed by a trusted CA should be used instead of a self-signed certificate.
+
+![Alt text](assets/insecure_connection.png)
+
+#### docker-compose.yml
+Two volumes have been added to the reverse_proxy service, one for the cerficates and another for the Traefik configuration. The labels have been updated to specify the entry points to use and enable TLS.
 
 
+#### traefik.yml
+**Entrypoints:** 
+Two entry points have been have been added. `http` on port 80 and `https` on port 443. The `http` entry point automatically redirects to the https to ensure that the applications can only be accessed securely.
+
+**TLS:**
+The tls option is used to set up the cerificates and keys to use for the secured connection.
 
 Optional steps
 ==============
