@@ -27,6 +27,7 @@ In addition to the basic requirement of service static and dynamic content, the 
 - **Security**: the connection between the browser and the reverse proxy will be encrypted using HTTPS.
 - **Management**: a Web application will be deployed to manage the infrastructure. This application will allow to start/stop instances of the servers and to monitor the state of the infrastructure.
 
+> **Note:** The project was set up on a virtual machine running debian (CLI only). The service were then accessed through a virtual network (192.168.56.0/24). The machine's IP was 192.168.56.12 and was used in place of the local address.
 
 Step 0: GitHub repository
 -------------------------
@@ -333,6 +334,7 @@ Multiple instance of the different service can be deployed with the command:
 ```sh
 docker compose up --scale api=n --scale web=m -d
 ```
+
 This command will deploy _n_ instances of the service `api` and _m_ instances of the service `web`. If needed the number of instances can be modified while running with the following command:
 
 ```sh
@@ -345,6 +347,12 @@ In the following image we can see that 3 servers of the `api` service and 5 serv
 
 ![Alt text](assets/load_balancing.png)
 
+Another alternative to deploy multiple instances at once is to modify the `docker-compose.yml` file to add the following lines when defining the service attributes:
+
+```docker
+    deploy:
+      replicas: n
+```
 
 Step 6: Load balancing with round-robin and sticky sessions
 -----------------------------------------------------------
